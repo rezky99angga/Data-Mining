@@ -1,0 +1,81 @@
+---
+title: "UTS DMKM"
+author: "Rezky Angga Pradana"
+date: "10/27/2020"
+output:
+  word_document: default
+  html_document: default
+---
+### Load Library
+
+
+```{r message=FALSE, warning=FALSE}
+library(caret)
+library(neuralnet)
+```
+
+# Pembacaan Data
+```{r}
+data <- read.csv("C:\\Users\\user\\Documents\\AAKULIAH\\TINGKAT 3\\SEMT 5\\DMKM\\UTS\\flag.csv", sep = ",", header = FALSE)
+data
+```
+
+
+# melihat struktur variabel
+```{r}
+str(data)
+
+```
+# Menjadikan data factor
+```{r}
+for(i in names(data)){
+  data[,i]=as.factor(data[,i])
+}
+str(data)
+```
+
+# Data Training dan Data Test
+Memecah data menjadi data training (80% dari data awal) dan data test (20% dari data awal)
+```{r}
+set.seed(123)
+sampel <- sample(2,nrow(data),replace = T, prob = c(0.8,0.2))
+datatraining <- data[sampel==1, ]
+datatest <- data[sampel==2, ]
+```
+```{r}
+print(paste("Jumlah training data :", nrow(datatraining)))
+```
+```{r}
+print(paste("Jumlah test data :", nrow(datatest)))
+```
+```{r}
+summary(data)
+```
+```{r}
+bendera<-names(data[,i])
+feats<-paste(bendera,collapse = '+');feats
+f1<-paste('Selector~',feats);f1
+```
+### Membuat Model
+```{r}
+library(neuralnet)
+model<-neuralnet(f1,datatraining)
+ # plot model
+plot(model)
+```
+
+# Prediksi
+```{r}
+pred<-compute(model,datatest[1:10])
+pred_1<-ifelse(pred_1$net.result > 0.5,1,0)
+conf_matrix=table(pred_1.1,datatest$Selector);conf_matrix
+akurasi=(conf_matrix[1,1]+conf_matrix[2,2])/sum(conf_matrix)
+akurasi
+```
+
+jika output dari model lebih dari 0.5, maka kategorikan sebagai 1 (admitted), dan 0 (non admitted) jika lainnya
+
+# Confusion Matriks
+```{r}
+confusionMatrix(table(pred, datatest$bendera))
+```
